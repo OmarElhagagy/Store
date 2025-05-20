@@ -29,9 +29,12 @@ public class ShippingDTO {
     @Size(max = 50, message = "Shipping provider cannot exceed 50 characters")
     String shippingProvider;
     
-    Instant shippedDate;
+    String shippedDate;
     
-    Instant deliveredDate;
+    String deliveredDate;
+    
+    // Added for estimated delivery
+    String estimatedDeliveryDate;
     
     /**
      * Converts a Shipping entity to ShippingDTO
@@ -49,8 +52,8 @@ public class ShippingDTO {
                 .orderId(shipping.getOrder() != null ? shipping.getOrder().getId() : null)
                 .trackingNumber(shipping.getTrackingNumber())
                 .shippingProvider(shipping.getShippingProvider())
-                .shippedDate(shipping.getShippedDate())
-                .deliveredDate(shipping.getDeliveredDate())
+                .shippedDate(shipping.getShippedDate() != null ? shipping.getShippedDate().toString() : null)
+                .deliveredDate(shipping.getDeliveredDate() != null ? shipping.getDeliveredDate().toString() : null)
                 .build();
     }
     
@@ -64,8 +67,29 @@ public class ShippingDTO {
     public Shipping updateEntity(Shipping entity) {
         entity.setTrackingNumber(this.trackingNumber);
         entity.setShippingProvider(this.shippingProvider);
-        entity.setShippedDate(this.shippedDate);
-        entity.setDeliveredDate(this.deliveredDate);
+        
+        // Convert string dates to Instant safely
+        if (this.shippedDate != null && !this.shippedDate.isEmpty()) {
+            entity.setShippedDate(Instant.parse(this.shippedDate));
+        }
+        
+        if (this.deliveredDate != null && !this.deliveredDate.isEmpty()) {
+            entity.setDeliveredDate(Instant.parse(this.deliveredDate));
+        }
+        
         return entity;
+    }
+    
+    /**
+     * Safely converts string to Instant
+     * 
+     * @param dateString ISO-8601 formatted date string
+     * @return Instant object or null if string was null/empty
+     */
+    public static Instant parseInstant(String dateString) {
+        if (dateString == null || dateString.isEmpty()) {
+            return null;
+        }
+        return Instant.parse(dateString);
     }
 }

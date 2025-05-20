@@ -37,7 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public Optional<Category> findByCategoryName(String name) {
         return categoryRepository.findByCategoryName(name);
     }
@@ -105,5 +105,56 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     public long count() {
         return categoryRepository.count();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Category> findSubcategoriesByParentId(Integer parentId) {
+        // Check if parent category exists
+        if (!existsById(parentId)) {
+            throw new EntityNotFoundException("Parent category not found with ID: " + parentId);
+        }
+        
+        return categoryRepository.findByParentCategoryId(parentId);
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<Category> findTopLevelCategories() {
+        return categoryRepository.findByParentCategoryIsNull();
+    }
+    
+    @Override
+    @Transactional
+    public Category createCategory(Category category) {
+        // This is an alias for save() but with additional validations specific to creation
+        if (category.getId() != null) {
+            throw new IllegalArgumentException("New category should not have an ID");
+        }
+        
+        return save(category);
+    }
+    
+    @Override
+    @Transactional
+    public Category updateCategory(Category category) {
+        // This is an alias for save() but with validations specific to updates
+        if (category.getId() == null) {
+            throw new IllegalArgumentException("Category ID is required for updates");
+        }
+        
+        // Check that the category exists
+        if (!existsById(category.getId())) {
+            throw new EntityNotFoundException("Category not found with ID: " + category.getId());
+        }
+        
+        return save(category);
+    }
+    
+    @Override
+    @Transactional
+    public void deleteCategory(Integer id) {
+        // This is an alias for deleteById() for controller compatibility
+        deleteById(id);
     }
 }

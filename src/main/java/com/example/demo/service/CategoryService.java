@@ -17,4 +17,21 @@ public interface CategoryService {
     void deleteById(Integer id);
     long count();
     List<Category> saveAll(List<Category> categories);
+    
+    // Additional methods required by CategoryController
+    
+    // Find subcategories of a parent category
+    List<Category> findSubcategoriesByParentId(Integer parentId);
+    
+    // Find top-level categories (categories without a parent)
+    List<Category> findTopLevelCategories();
+    
+    // Create a new category
+    Category createCategory(Category category);
+    
+    // Update an existing category
+    Category updateCategory(Category category);
+    
+    // Delete a category - different signature from deleteById for compatibility
+    void deleteCategory(Integer id);
 }

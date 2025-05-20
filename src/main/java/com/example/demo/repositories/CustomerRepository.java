@@ -17,11 +17,11 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     @Query("SELECT c FROM Customer c WHERE c.email = :email AND c.active = true")
     Optional<Customer> findByEmail(@Param("email") String email);
     
-    @Query("SELECT c FROM Customer c WHERE LOWER(c.fName) LIKE LOWER(CONCAT('%', :name, '%')) AND c.active = true")
-    List<Customer> findByFNameContainingIgnoreCase(@Param("name") String name);
+    @Query("SELECT c FROM Customer c WHERE LOWER(c.firstName) LIKE LOWER(CONCAT('%', :name, '%')) AND c.active = true")
+    List<Customer> findByFirstNameContainingIgnoreCase(@Param("name") String name);
     
-    @Query("SELECT c FROM Customer c WHERE LOWER(c.lName) LIKE LOWER(CONCAT('%', :name, '%')) AND c.active = true")
-    List<Customer> findByLNameContainingIgnoreCase(@Param("name") String name);
+    @Query("SELECT c FROM Customer c WHERE LOWER(c.lastName) LIKE LOWER(CONCAT('%', :name, '%')) AND c.active = true")
+    List<Customer> findByLastNameContainingIgnoreCase(@Param("name") String name);
     
     @Query("SELECT c FROM Customer c WHERE c.birthDate < :date AND c.active = true")
     List<Customer> findByBirthDateBefore(@Param("date") LocalDate date);

@@ -96,15 +96,13 @@ public class AuthController {
             userService.findUserByEmail(loginRequest.getEmail())
                     .ifPresent(user -> userService.recordFailedLoginAttempt(user.getId()));
             
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new HashMap<String, String>() {{
-                        put("message", "Invalid email or password");
-                    }});
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Invalid email or password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         } catch (LockedException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new HashMap<String, String>() {{
-                        put("message", "Account is locked. Please try again later or contact support.");
-                    }});
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Account is locked. Please try again later or contact support.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
     }
 
@@ -118,10 +116,9 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
         // Check if email exists
         if (userService.isEmailTaken(registerRequest.getEmail())) {
-            return ResponseEntity.badRequest()
-                    .body(new HashMap<String, String>() {{
-                        put("message", "Email is already in use");
-                    }});
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Email is already in use");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
 
         // Create or get customer
@@ -185,9 +182,9 @@ public class AuthController {
         Integer userId = userDetails.getId();
         refreshTokenService.deleteByUserId(userId);
         
-        return ResponseEntity.ok(new HashMap<String, String>() {{
-            put("message", "Log out successful!");
-        }});
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Log out successful!");
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/forgot-password")
@@ -205,14 +202,11 @@ public class AuthController {
                     // Send password reset email
                     emailService.sendPasswordResetEmail(user.getEmail(), token);
                     
-                    return ResponseEntity.ok(new HashMap<String, String>() {{
-                        put("message", "Password reset email sent successfully");
-                    }});
+                    Map<String, String> successResponse = new HashMap<>();
+                    successResponse.put("message", "Password reset email sent successfully");
+                    return ResponseEntity.ok(successResponse);
                 })
-                .orElse(ResponseEntity.ok(new HashMap<String, String>() {{
-                    // Don't reveal if email exists or not for security reasons
-                    put("message", "If your email is registered, you will receive a password reset link");
-                }}));
+                .orElse(ResponseEntity.ok(Map.of("message", "If your email is registered, you will receive a password reset link")));
     }
 
     @PostMapping("/reset-password")
@@ -224,15 +218,15 @@ public class AuthController {
     @SecurityRequirements()
     public ResponseEntity<?> resetPassword(@Valid @RequestBody PasswordChangeRequest request) {
         if (!passwordResetService.validatePasswordResetToken(request.getToken())) {
-            return ResponseEntity.badRequest().body(new HashMap<String, String>() {{
-                put("message", "Invalid or expired password reset token");
-            }});
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", "Invalid or expired password reset token");
+            return ResponseEntity.badRequest().body(errorResponse);
         }
         
         passwordResetService.resetPassword(request.getToken(), request.getNewPassword());
         
-        return ResponseEntity.ok(new HashMap<String, String>() {{
-            put("message", "Password has been reset successfully");
-        }});
+        Map<String, String> successResponse = new HashMap<>();
+        successResponse.put("message", "Password has been reset successfully");
+        return ResponseEntity.ok(successResponse);
     }
 } 

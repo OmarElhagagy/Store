@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.Instant;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -16,18 +17,25 @@ import java.util.Set;
 @Table(name = "\"Customer\"")
 public class Customer {
     private Integer id;
-
-    private String fName;
-
-    private String mName;
-
-    private String lName;
-
+    
+    private String firstName;
+    
+    private String middleName;
+    
+    private String lastName;
+    
     private String gender;
 
     private LocalDate birthDate;
 
     private String email;
+    
+    private String phone;
+    
+    private Instant createdAt;
+    
+    @Column(name = "\"Active\"", nullable = false)
+    private boolean active = true;
 
     private Set<Address> addresses = new LinkedHashSet<>();
 
@@ -51,20 +59,20 @@ public class Customer {
         return id;
     }
 
-    public String getFName() {
-        return fName;
+    @Column(name = "\"First_Name\"")
+    public String getFirstName() {
+        return firstName;
     }
 
-    public String getMName() {
-        return mName;
+    @Column(name = "\"Middle_Name\"")
+    public String getMiddleName() {
+        return middleName;
     }
 
-    public String getLName() {
-        return lName;
+    @Column(name = "\"Last_Name\"")
+    public String getLastName() {
+        return lastName;
     }
-
-    @Column(name = "\"Active\"", nullable = false)
-    private boolean active = true;
 
     @NotNull
     @Column(name = "\"Gender\"", nullable = false, length = Integer.MAX_VALUE)
@@ -83,6 +91,24 @@ public class Customer {
     @Column(name = "\"Email\"", nullable = false)
     public String getEmail() {
         return email;
+    }
+    
+    @Column(name = "\"Phone\"")
+    public String getPhone() {
+        return phone;
+    }
+    
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    
+    @Column(name = "\"Created_At\"")
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+    
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
     }
 
     @OneToMany(mappedBy = "customer")
@@ -125,12 +151,20 @@ public class Customer {
         return wishlists;
     }
 
-    // Add getter and setter for Active
-    public boolean isActive() {
-        return active;
+    // For backward compatibility with existing code
+    public String getFName() {
+        return firstName;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public String getMName() {
+        return middleName;
+    }
+
+    public String getLName() {
+        return lastName;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 }

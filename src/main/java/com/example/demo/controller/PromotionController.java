@@ -18,6 +18,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -296,14 +297,17 @@ public class PromotionController {
      */
     private void validateDiscountValues(PromotionDTO promotionDTO) {
         if ("PERCENT".equalsIgnoreCase(promotionDTO.getType())) {
-            if (promotionDTO.getDiscountPercent() == null || promotionDTO.getDiscountPercent() <= 0 || promotionDTO.getDiscountPercent() > 100) {
+            if (promotionDTO.getDiscountPercent() == null || 
+                promotionDTO.getDiscountPercent().compareTo(BigDecimal.ZERO) <= 0 || 
+                promotionDTO.getDiscountPercent().compareTo(new BigDecimal(100)) > 0) {
                 throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, 
                     "Discount percent must be between 1 and 100"
                 );
             }
         } else if ("FIXED".equalsIgnoreCase(promotionDTO.getType())) {
-            if (promotionDTO.getDiscountAmount() == null || promotionDTO.getDiscountAmount() <= 0) {
+            if (promotionDTO.getDiscountAmount() == null || 
+                promotionDTO.getDiscountAmount().compareTo(BigDecimal.ZERO) <= 0) {
                 throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, 
                     "Discount amount must be greater than zero"

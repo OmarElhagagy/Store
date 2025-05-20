@@ -23,12 +23,12 @@ public class CustomerDTO {
     Integer id;
     
     @NotBlank(message = "First name is required")
-    String fName;
+    String firstName;
     
-    String mName;
+    String middleName;
     
     @NotBlank(message = "Last name is required")
-    String lName;
+    String lastName;
     
     @NotBlank(message = "Gender is required")
     String gender;
@@ -57,9 +57,9 @@ public class CustomerDTO {
         
         return CustomerDTO.builder()
                 .id(customer.getId())
-                .fName(customer.getFName())
-                .mName(customer.getMName())
-                .lName(customer.getLName())
+                .firstName(customer.getFirstName())
+                .middleName(customer.getMiddleName())
+                .lastName(customer.getLastName())
                 .gender(customer.getGender())
                 .birthDate(customer.getBirthDate())
                 .email(customer.getEmail())
@@ -74,9 +74,9 @@ public class CustomerDTO {
      * @return Updated Customer entity
      */
     public Customer updateEntity(Customer entity) {
-        entity.setFName(this.fName);
-        entity.setMName(this.mName);
-        entity.setLName(this.lName);
+        entity.setFirstName(this.firstName);
+        entity.setMiddleName(this.middleName);
+        entity.setLastName(this.lastName);
         entity.setGender(this.gender);
         entity.setBirthDate(this.birthDate);
         entity.setEmail(this.email);

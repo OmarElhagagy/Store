@@ -2,7 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.ProductDTO;
 import com.example.demo.entities.Product;
+import com.example.demo.entities.Supplier;
 import com.example.demo.service.ProductService;
+import com.example.demo.service.SupplierService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -32,10 +34,12 @@ import java.util.stream.Collectors;
 public class ProductController {
 
     private final ProductService productService;
+    private final SupplierService supplierService;
 
     @Autowired
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, SupplierService supplierService) {
         this.productService = productService;
+        this.supplierService = supplierService;
     }
 
     /**
@@ -101,16 +105,37 @@ public class ProductController {
         }
         
         try {
-            Product product = new Product();
-            productDTO.updateEntity(product);
-            
-            Product savedProduct = productService.createProduct(product);
+            // Extract supplier from DTO
+            Supplier supplier = findSupplier(productDTO.getSupplierId());
+
+            // Create product using the service method signature
+            Product savedProduct = productService.createProduct(
+                productDTO.getProductName(),
+                productDTO.getSize(),
+                productDTO.getBrand(),
+                productDTO.getPrice(),
+                productDTO.getColor(),
+                productDTO.getDescription(),
+                supplier
+            );
             
             return new ResponseEntity<>(ProductDTO.fromEntity(savedProduct), HttpStatus.CREATED);
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         } catch (Exception e) {
             log.error("Error creating product", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error creating product: " + e.getMessage(), e);
         }
+    }
+
+    // Helper method to find supplier
+    private Supplier findSupplier(Integer supplierId) {
+        if (supplierId == null) {
+            return null;
+        }
+        
+        return supplierService.findSupplierById(supplierId)
+            .orElseThrow(() -> new EntityNotFoundException("Supplier not found with ID: " + supplierId));
     }
 
     /**

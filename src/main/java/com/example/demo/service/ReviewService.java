@@ -38,4 +38,8 @@ public interface ReviewService {
     
     // Delete a review
     void deleteReview(Integer id);
+
+    List<Review> findByRating(Integer rating);
+
+    Optional<Review> findById(Integer id);
 }
