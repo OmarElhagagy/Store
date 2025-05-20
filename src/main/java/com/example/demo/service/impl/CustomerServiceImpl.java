@@ -3,7 +3,6 @@ package com.example.demo.service.impl;
 import com.example.demo.entities.Customer;
 import com.example.demo.entities.CustomerOrder;
 import com.example.demo.repositories.CustomerRepository;
-import com.example.demo.repositories.CategoryRepository;
 import com.example.demo.repositories.CustomerOrderRepository;
 import com.example.demo.service.CustomerService;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+@Service
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
@@ -172,6 +172,31 @@ public class CustomerServiceImpl implements CustomerService {
         return customerOrderRepository.findByCustomerId(customerId);
     }
 
+    @Override
+    @Transactional
+    public Customer createCustomer(String firstName, String lastName, String email) {
+        if (customerRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email already exists: " + email);
+        }
+        
+        Customer customer = new Customer();
+        customer.setFName(firstName);
+        customer.setLName(lastName);
+        customer.setEmail(email);
+        customer.setActive(true);
+        
+        // Set default values for required fields
+        customer.setGender("Undisclosed");  // Default gender
+        customer.setBirthDate(LocalDate.of(2000, 1, 1));  // Default birth date
+        
+        return customerRepository.save(customer);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long count() {
+        return customerRepository.count();
+    }
 
     // helper methods for cusomter validation
     private void validateCustomer(Customer customer) {

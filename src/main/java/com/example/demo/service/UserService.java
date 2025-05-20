@@ -15,11 +15,14 @@ public interface UserService {
     // Create a new user
     User createUser(Customer customer, String email, String password, String role);
     
+    // Create a new user with customer details (for registration flow)
+    User createUser(String email, String password, String firstName, String lastName, String role);
+    
     // Find user by ID
     Optional<User> findUserById(Integer id);
     
     // Find user by email
-    Optional<User> findUserByEmail(String email);
+    Optional<User> findByEmail(String email);
     
     // Get all users
     List<User> getAllUsers();
@@ -39,8 +42,17 @@ public interface UserService {
     // Update user password
     User updateUserPassword(Integer userId, String newPassword);
     
+    // Update user password with User object
+    User updatePassword(User user, String newPassword);
+    
     // Update user role
     User updateUserRole(Integer userId, String newRole);
+    
+    // Update user role with User object
+    User updateUserRole(User user, String newRole);
+    
+    // Change password with verification of current password
+    boolean changePassword(String email, String currentPassword, String newPassword);
     
     // Get user sessions
     Set<Session> getUserSessions(Integer userId);
@@ -82,7 +94,7 @@ public interface UserService {
     long countUsersByRole(String role);
     
     // Check if email exists
-    boolean isEmailTaken(String email);
+    boolean existsByEmail(String email);
     
     // Get users with audit logs
     List<User> getUsersWithAuditLogs();

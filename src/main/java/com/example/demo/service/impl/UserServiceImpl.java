@@ -5,6 +5,7 @@ import com.example.demo.entities.Customer;
 import com.example.demo.entities.Session;
 import com.example.demo.entities.User;
 import com.example.demo.repositories.UserRepository;
+import com.example.demo.service.CustomerService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,10 +25,12 @@ import java.util.Base64;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final CustomerService customerService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, CustomerService customerService) {
         this.userRepository = userRepository;
+        this.customerService = customerService;
     }
     
     // Simple password hashing with SHA-256
@@ -60,6 +63,30 @@ public class UserServiceImpl implements UserService {
         
         return userRepository.save(user);
     }
+    
+    @Override
+    @Transactional
+    public User createUser(String email, String password, String firstName, String lastName, String role) {
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email is already in use: " + email);
+        }
+        
+        // Create a customer first
+        Customer customer = customerService.createCustomer(firstName, lastName, email);
+        
+        // Then create the user associated with this customer
+        User user = new User();
+        user.setCustomer(customer);
+        user.setEmail(email);
+        user.setPasswordHash(hashPassword(password));
+        user.setRole(role);
+        user.setFailedLogins(0);
+        user.setCreatedAt(Instant.now());
+        user.setAuditLogs(new HashSet<>());
+        user.setSessions(new HashSet<>());
+        
+        return userRepository.save(user);
+    }
 
     @Override
     public Optional<User> findUserById(Integer id) {
@@ -67,8 +94,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findUserByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    // Alias for backward compatibility
+    public Optional<User> findUserByEmail(String email) {
+        return findByEmail(email);
     }
 
     @Override
@@ -123,6 +155,13 @@ public class UserServiceImpl implements UserService {
         
         throw new IllegalArgumentException("User not found with ID: " + userId);
     }
+    
+    @Override
+    @Transactional
+    public User updatePassword(User user, String newPassword) {
+        user.setPasswordHash(hashPassword(newPassword));
+        return userRepository.save(user);
+    }
 
     @Override
     @Transactional
@@ -136,6 +175,32 @@ public class UserServiceImpl implements UserService {
         }
         
         throw new IllegalArgumentException("User not found with ID: " + userId);
+    }
+    
+    @Override
+    @Transactional
+    public User updateUserRole(User user, String newRole) {
+        user.setRole(newRole);
+        return userRepository.save(user);
+    }
+    
+    @Override
+    @Transactional
+    public boolean changePassword(String email, String currentPassword, String newPassword) {
+        Optional<User> optionalUser = findByEmail(email);
+        
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            
+            // Verify current password
+            if (verifyPassword(currentPassword, user.getPasswordHash())) {
+                user.setPasswordHash(hashPassword(newPassword));
+                userRepository.save(user);
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     @Override
@@ -259,7 +324,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isEmailTaken(String email) {
+    public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
@@ -278,5 +343,10 @@ public class UserServiceImpl implements UserService {
     public boolean verifyPassword(String rawPassword, String storedHash) {
         String hashedInput = hashPassword(rawPassword);
         return hashedInput.equals(storedHash);
+    }
+
+    // Renamed method for backward compatibility
+    public boolean isEmailTaken(String email) {
+        return existsByEmail(email);
     }
 }

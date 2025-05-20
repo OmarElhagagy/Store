@@ -38,4 +38,9 @@ public class Image {
         return imageUrl;
     }
 
+    public void setPrimary(boolean b) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setPrimary'");
+    }
+
 }

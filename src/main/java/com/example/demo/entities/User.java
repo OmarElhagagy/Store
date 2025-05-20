@@ -102,5 +102,30 @@ public class User {
     public Set<Session> getSessions() {
         return sessions;
     }
-
+    
+    // Convenience method to get firstName from associated Customer
+    @Transient
+    public String getFirstName() {
+        return customer != null ? customer.getFName() : null;
+    }
+    
+    // Convenience method to set firstName on associated Customer
+    public void setFirstName(String firstName) {
+        if (customer != null) {
+            customer.setFName(firstName);
+        }
+    }
+    
+    // Convenience method to get lastName from associated Customer
+    @Transient
+    public String getLastName() {
+        return customer != null ? customer.getLName() : null;
+    }
+    
+    // Convenience method to set lastName on associated Customer
+    public void setLastName(String lastName) {
+        if (customer != null) {
+            customer.setLName(lastName);
+        }
+    }
 }

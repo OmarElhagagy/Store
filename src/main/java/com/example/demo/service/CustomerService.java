@@ -26,4 +26,7 @@ public interface CustomerService {
     long count();
 
     List<CustomerOrder> getCustomerOrders(Integer customerId);
+    
+    // Create a new customer with basic information
+    Customer createCustomer(String firstName, String lastName, String email);
 }

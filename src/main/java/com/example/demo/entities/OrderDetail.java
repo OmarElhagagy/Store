@@ -73,4 +73,14 @@ public class OrderDetail {
         return finalPrice;
     }
 
+    public BigDecimal getPrice() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPrice'");
+    }
+
+    public BigDecimal getUnitPrice() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getUnitPrice'");
+    }
+
 }

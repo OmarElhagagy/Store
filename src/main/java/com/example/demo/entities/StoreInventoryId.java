@@ -19,6 +19,10 @@ public class StoreInventoryId implements Serializable {
 
     private Integer productId;
 
+    public StoreInventoryId(Integer id, Integer id2) {
+        //TODO Auto-generated constructor stub
+    }
+
     @NotNull
     @Column(name = "\"Store_ID\"", nullable = false)
     public Integer getStoreId() {

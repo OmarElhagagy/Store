@@ -95,4 +95,9 @@ public class Promotion {
         return customerOrders;
     }
 
+    public BigDecimal getDiscountRate() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDiscountRate'");
+    }
+
 }

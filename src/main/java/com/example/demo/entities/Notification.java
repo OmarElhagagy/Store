@@ -78,4 +78,9 @@ public class Notification {
         return sentDate;
     }
 
+    public void setRead(boolean b) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setRead'");
+    }
+
 }

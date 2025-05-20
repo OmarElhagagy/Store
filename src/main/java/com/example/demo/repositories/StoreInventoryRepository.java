@@ -39,4 +39,6 @@ public interface StoreInventoryRepository extends JpaRepository<StoreInventory, 
     // Find low stock items for a specific store
     @Query("SELECT si FROM StoreInventory si WHERE si.store = ?1 AND si.quantity <= si.store.minStock")
     List<StoreInventory> findLowStockItemsByStore(Store store);
+
+    Optional<StoreInventory> findByStoreIdAndProductId(Integer storeId, Integer productId);
 }
