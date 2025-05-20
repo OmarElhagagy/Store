@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.entities.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -119,4 +121,24 @@ public interface ProductService {
     
     // Delete product
     void deleteProduct(Integer productId);
+    
+    // Additional methods required by ProductController
+    
+    // Find product by ID (alias for findProductById)
+    Optional<Product> findById(Integer id);
+    
+    // Find all products with pagination
+    Page<Product> findAllWithPagination(Pageable pageable);
+    
+    // Find products by category ID
+    List<Product> findByCategoryId(Integer categoryId);
+    
+    // Search products by query string
+    List<Product> searchProducts(String query);
+    
+    // Update product inventory
+    Product updateInventory(Integer productId, Integer quantity);
+    
+    // Update product price (Double version for controller compatibility)
+    Product updatePrice(Integer productId, Double price);
 }

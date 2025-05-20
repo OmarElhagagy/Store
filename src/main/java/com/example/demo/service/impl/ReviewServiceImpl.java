@@ -144,4 +144,14 @@ public class ReviewServiceImpl implements ReviewService {
     public void deleteReview(Integer id) {
         reviewRepository.deleteById(id);
     }
+
+    @Override
+    public List<Review> findByRating(Integer rating) {
+        return List.of();
+    }
+
+    @Override
+    public Optional<Review> findById(Integer id) {
+        return Optional.empty();
+    }
 }

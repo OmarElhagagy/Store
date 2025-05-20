@@ -22,6 +22,12 @@ public class CategoryDTO {
     @Size(max = 50, message = "Category name cannot exceed 50 characters")
     String categoryName;
     
+<<<<<<< HEAD
+=======
+    // Parent category ID for hierarchical categories
+    Integer parentCategoryId;
+    
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
     /**
      * Converts a Category entity to CategoryDTO
      *
@@ -36,6 +42,10 @@ public class CategoryDTO {
         return CategoryDTO.builder()
                 .id(category.getId())
                 .categoryName(category.getCategoryName())
+<<<<<<< HEAD
+=======
+                .parentCategoryId(null) // This would need to be populated if Category had a parent field
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
                 .build();
     }
     
@@ -47,6 +57,10 @@ public class CategoryDTO {
      */
     public Category updateEntity(Category entity) {
         entity.setCategoryName(this.categoryName);
+<<<<<<< HEAD
+=======
+        // If Category entity had a parent field, we would set it here
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
         return entity;
     }
     
@@ -59,6 +73,10 @@ public class CategoryDTO {
         Category category = new Category();
         category.setId(this.id);
         category.setCategoryName(this.categoryName);
+<<<<<<< HEAD
+=======
+        // If Category entity had a parent field, we would set it here
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
         return category;
     }
 }

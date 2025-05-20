@@ -2,6 +2,7 @@ package com.example.demo.dto;
 
 import com.example.demo.entities.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
+<<<<<<< HEAD
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -10,6 +11,13 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Value;
 import lombok.With;
+=======
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
+import lombok.Value;
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
 
 import java.time.Instant;
 
@@ -20,7 +28,10 @@ import java.time.Instant;
  */
 @Value
 @Builder
+<<<<<<< HEAD
 @With
+=======
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
 
@@ -33,6 +44,7 @@ public class UserDTO {
     @Email(message = "Email must be valid")
     String email;
     
+<<<<<<< HEAD
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Size(min = 8, message = "Password must be at least 8 characters")
     String password;
@@ -43,6 +55,8 @@ public class UserDTO {
     @NotBlank(message = "Last name is required")
     String lastName;
     
+=======
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
     @NotBlank(message = "Role is required")
     String role;
     
@@ -68,8 +82,11 @@ public class UserDTO {
                 .id(user.getId())
                 .customerId(user.getCustomer() != null ? user.getCustomer().getId() : null)
                 .email(user.getEmail())
+<<<<<<< HEAD
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+=======
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
                 .role(user.getRole())
                 .failedLogins(user.getFailedLogins())
                 .lockedUntil(user.getLockedUntil())
@@ -86,6 +103,7 @@ public class UserDTO {
      */
     public User updateEntity(User entity) {
         entity.setEmail(this.email);
+<<<<<<< HEAD
         if (this.firstName != null) {
             entity.setFirstName(this.firstName);
         }
@@ -96,6 +114,10 @@ public class UserDTO {
         if (this.failedLogins != null) {
             entity.setFailedLogins(this.failedLogins);
         }
+=======
+        entity.setRole(this.role);
+        entity.setFailedLogins(this.failedLogins);
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
         entity.setLockedUntil(this.lockedUntil);
         if (this.createdAt != null) {
             entity.setCreatedAt(this.createdAt);

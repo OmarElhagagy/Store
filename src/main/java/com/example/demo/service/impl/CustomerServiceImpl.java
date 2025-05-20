@@ -7,6 +7,8 @@ import com.example.demo.repositories.CustomerOrderRepository;
 import com.example.demo.service.CustomerService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<Customer> findAllWithPagination(Pageable pageable) {
+        return customerRepository.findAll(pageable);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Optional<Customer> findById(Integer id) {
         return customerRepository.findById(id);
     }
@@ -50,13 +58,13 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional(readOnly = true)
     public List<Customer> findByLastName(String name) {
-        return customerRepository.findByLNameContainingIgnoreCase(name);
+        return customerRepository.findByLastNameContainingIgnoreCase(name);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<Customer> findByFirstName(String name) {
-        return customerRepository.findByFNameContainingIgnoreCase(name);
+        return customerRepository.findByFirstNameContainingIgnoreCase(name);
     }
 
     @Override
@@ -89,6 +97,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Customer createCustomer(Customer customer) {
+        return save(customer);
+    }
+
+    @Override
     public Customer update(Customer customer) {
         // check if customer exists
         if (customer.getId() == null || !customerRepository.existsById(customer.getId())) {
@@ -113,6 +126,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Customer updateCustomer(Customer customer) {
+        return update(customer);
+    }
+
+    @Override
     public void deleteById(Integer id) {
         // verify customer exists and is active
         Customer customer = customerRepository.findById(id)
@@ -126,6 +144,43 @@ public class CustomerServiceImpl implements CustomerService {
         // Soft delete - set active to false
         customer.setActive(false);
         customerRepository.save(customer);
+    }
+
+    @Override
+    public void deleteCustomer(Integer id) {
+        deleteById(id);
+    }
+
+    @Override
+    public Customer activateCustomer(Integer id) {
+        // find customer despite his active status
+        Customer customer = customerRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Customer not found with ID" + id));
+
+        // check if already active
+        if (customer.isActive()) {
+            throw new IllegalStateException("Customer is already active");
+        }
+
+        // Activate customer
+        customer.setActive(true);
+        return customerRepository.save(customer);
+    }
+
+    @Override
+    public Customer deactivateCustomer(Integer id) {
+        // find customer despite his active status
+        Customer customer = customerRepository.findById(id)
+            .orElseThrow(() -> new EntityNotFoundException("Customer not found with ID" + id));
+
+        // check if already inactive
+        if (!customer.isActive()) {
+            throw new IllegalStateException("Customer is already inactive");
+        }
+
+        // Deactivate customer
+        customer.setActive(false);
+        return customerRepository.save(customer);
     }
 
     @Override
@@ -202,11 +257,11 @@ public class CustomerServiceImpl implements CustomerService {
     private void validateCustomer(Customer customer) {
         List<String> errors = new ArrayList<>();
 
-        if (customer.getFName() == null || customer.getFName().trim().isEmpty()) {
+        if (customer.getFirstName() == null || customer.getFirstName().trim().isEmpty()) {
             errors.add("First name is required");
         }
 
-        if(customer.getLName() == null || customer.getLName().trim().isEmpty()) {
+        if(customer.getLastName() == null || customer.getLastName().trim().isEmpty()) {
             errors.add("Last name is required");
         }
 

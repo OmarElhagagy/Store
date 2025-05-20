@@ -8,28 +8,31 @@ import com.example.demo.repositories.UserRepository;
 import com.example.demo.service.CustomerService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.Base64;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+<<<<<<< HEAD
     private final CustomerService customerService;
+=======
+    private final PasswordEncoder passwordEncoder;
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, CustomerService customerService) {
         this.userRepository = userRepository;
+<<<<<<< HEAD
         this.customerService = customerService;
     }
     
@@ -42,6 +45,9 @@ public class UserServiceImpl implements UserService {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Failed to hash password", e);
         }
+=======
+        this.passwordEncoder = new BCryptPasswordEncoder();
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
     }
 
     @Override
@@ -54,7 +60,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setCustomer(customer);
         user.setEmail(email);
-        user.setPasswordHash(hashPassword(password));
+        user.setPasswordHash(passwordEncoder.encode(password));
         user.setRole(role);
         user.setFailedLogins(0);
         user.setCreatedAt(Instant.now());
@@ -149,7 +155,7 @@ public class UserServiceImpl implements UserService {
         
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            user.setPasswordHash(hashPassword(newPassword));
+            user.setPasswordHash(passwordEncoder.encode(newPassword));
             return userRepository.save(user);
         }
         
@@ -341,8 +347,7 @@ public class UserServiceImpl implements UserService {
     
     // Method to verify password
     public boolean verifyPassword(String rawPassword, String storedHash) {
-        String hashedInput = hashPassword(rawPassword);
-        return hashedInput.equals(storedHash);
+        return passwordEncoder.matches(rawPassword, storedHash);
     }
 
     // Renamed method for backward compatibility

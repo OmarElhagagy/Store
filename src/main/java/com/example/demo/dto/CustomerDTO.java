@@ -23,12 +23,21 @@ public class CustomerDTO {
     Integer id;
     
     @NotBlank(message = "First name is required")
+<<<<<<< HEAD
     String fName;
     
     String mName;
     
     @NotBlank(message = "Last name is required")
     String lName;
+=======
+    String firstName;
+    
+    String middleName;
+    
+    @NotBlank(message = "Last name is required")
+    String lastName;
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
     
     @NotBlank(message = "Gender is required")
     String gender;
@@ -57,9 +66,15 @@ public class CustomerDTO {
         
         return CustomerDTO.builder()
                 .id(customer.getId())
+<<<<<<< HEAD
                 .fName(customer.getFName())
                 .mName(customer.getMName())
                 .lName(customer.getLName())
+=======
+                .firstName(customer.getFirstName())
+                .middleName(customer.getMiddleName())
+                .lastName(customer.getLastName())
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
                 .gender(customer.getGender())
                 .birthDate(customer.getBirthDate())
                 .email(customer.getEmail())
@@ -74,9 +89,15 @@ public class CustomerDTO {
      * @return Updated Customer entity
      */
     public Customer updateEntity(Customer entity) {
+<<<<<<< HEAD
         entity.setFName(this.fName);
         entity.setMName(this.mName);
         entity.setLName(this.lName);
+=======
+        entity.setFirstName(this.firstName);
+        entity.setMiddleName(this.middleName);
+        entity.setLastName(this.lastName);
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
         entity.setGender(this.gender);
         entity.setBirthDate(this.birthDate);
         entity.setEmail(this.email);

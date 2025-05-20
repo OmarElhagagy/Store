@@ -47,6 +47,28 @@ public class PromotionDTO {
     
     Integer maxUses;
     
+<<<<<<< HEAD
+=======
+    String type;
+    
+    /**
+     * Get the type of promotion (percentage or fixed amount)
+     * @return The promotion type
+     */
+    public String getType() {
+        return discountPercentage != null && discountPercentage.compareTo(BigDecimal.ZERO) > 0 ? 
+            "PERCENTAGE" : "FIXED_AMOUNT";
+    }
+    
+    /**
+     * Get the discount percentage (alias for discountPercentage)
+     * @return The discount percentage
+     */
+    public BigDecimal getDiscountPercent() {
+        return discountPercentage;
+    }
+    
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
     /**
      * Converts a Promotion entity to PromotionDTO
      *
@@ -68,6 +90,11 @@ public class PromotionDTO {
                 .endDate(promotion.getEndDate())
                 .isActive(promotion.getIsActive())
                 .maxUses(promotion.getMaxUses())
+<<<<<<< HEAD
+=======
+                .type(promotion.getDiscountPercentage() != null && promotion.getDiscountPercentage().compareTo(BigDecimal.ZERO) > 0 ? 
+                    "PERCENTAGE" : "FIXED_AMOUNT")
+>>>>>>> 792c76ef0c59203fc34a67fcc0180ab0237bc044
                 .build();
     }
     
